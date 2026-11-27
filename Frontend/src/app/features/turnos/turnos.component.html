@@ -1,0 +1,85 @@
+<section class="pagina">
+  <div class="encabezado">
+    <div>
+      <h1>Turnos y cajas</h1>
+      <p>Cada caja admite máximo dos cajeros y los turnos salen con el prefijo del trámite: AC, PS, CS, CP o CC.</p>
+    </div>
+  </div>
+
+  <div class="dos">
+    <article class="panel">
+      <h2>Asignar cajero</h2>
+      <form [formGroup]="asignacion" (ngSubmit)="asignar()">
+        <mat-form-field appearance="outline" class="ancho">
+          <mat-label>Caja</mat-label>
+          <mat-select formControlName="cajaId">
+            <mat-option *ngFor="let caja of cajas" [value]="caja.id">{{ caja.codigo }} · {{ caja.nombre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="ancho">
+          <mat-label>Cajero activo</mat-label>
+          <mat-select formControlName="cajeroId">
+            <mat-option *ngFor="let cajero of cajeros" [value]="cajero.id">{{ cajero.nombreCompleto }} · {{ cajero.nombreUsuario }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-flat-button color="primary" type="submit">Asignar</button>
+      </form>
+      <div *ngFor="let caja of cajas" style="margin-top:16px">
+        <strong>{{ caja.codigo }}</strong>
+        <span class="etiqueta" *ngIf="caja.usuarioActivo">Ocupada por {{ caja.usuarioActivo }}</span>
+        <p class="vacio" *ngIf="caja.asignaciones.length === 0">Sin cajeros.</p>
+        <div class="fila" *ngFor="let item of caja.asignaciones">
+          <span>{{ item.cajero }}</span>
+          <button mat-button type="button" (click)="quitar(caja.id, item.id)">Quitar</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="panel">
+      <h2>Asignar turnos</h2>
+      <form [formGroup]="turno" (ngSubmit)="crearTurnos()">
+        <mat-form-field appearance="outline" class="ancho">
+          <mat-label>Caja</mat-label>
+          <mat-select formControlName="cajaId">
+            <mat-option *ngFor="let caja of cajas" [value]="caja.id">{{ caja.codigo }} · {{ caja.nombre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="ancho">
+          <mat-label>Cajero de esa caja</mat-label>
+          <mat-select formControlName="cajeroId">
+            <mat-option *ngFor="let cajero of cajerosDeCaja(turno.value.cajaId || 0)" [value]="cajero.id">{{ cajero.nombre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="ancho">
+          <mat-label>Tipo de atención</mat-label>
+          <mat-select formControlName="tipoAtencionId">
+            <mat-option *ngFor="let tipo of tipos" [value]="tipo.id">{{ tipo.codigo }} · {{ tipo.nombre }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="ancho">
+          <mat-label>Cantidad</mat-label>
+          <input matInput type="number" formControlName="cantidad" min="1" max="20">
+        </mat-form-field>
+        <button mat-flat-button color="primary" type="submit">Generar turnos</button>
+      </form>
+    </article>
+  </div>
+
+  <article class="panel">
+    <h2>Turnos de hoy</h2>
+    <table class="tabla">
+      <thead><tr><th>Turno</th><th>Tipo</th><th>Caja</th><th>Cajero</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        <tr *ngFor="let item of turnos">
+          <td>{{ item.descripcion }}</td>
+          <td>{{ item.tipoNombre }}</td>
+          <td>{{ item.caja }}</td>
+          <td>{{ item.cajero }}</td>
+          <td><span class="etiqueta">{{ item.estado }}</span></td>
+          <td><button mat-button type="button" *ngIf="item.estado === 'Asignado'" (click)="cancelar(item)">Cancelar</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="vacio" *ngIf="turnos.length === 0">Todavía no asigna turnos hoy.</p>
+  </article>
+</section>

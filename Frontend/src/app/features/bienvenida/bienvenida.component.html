@@ -1,0 +1,53 @@
+<section class="pagina" *ngIf="datos as info">
+  <div class="encabezado">
+    <div>
+      <h1>Hola, {{ info.usuario.nombres }}.</h1>
+      <p>Sesión de {{ info.usuario.rol }} · {{ info.usuario.nombreUsuario }}</p>
+    </div>
+  </div>
+
+  <div class="rejilla">
+    <article class="tarjeta kpi">
+      <span>{{ info.descripcionTotal }}</span>
+      <strong>{{ info.totalTurnos }}</strong>
+    </article>
+    <article class="tarjeta">
+      <span>Estado</span>
+      <strong style="font-size:20px">{{ info.usuario.estado }}</strong>
+    </article>
+    <article class="tarjeta">
+      <span>Sesión</span>
+      <strong style="font-size:20px">{{ info.usuario.sesionActiva ? 'Activa' : 'Inactiva' }}</strong>
+    </article>
+  </div>
+
+  <article class="panel">
+    <h2>Datos del usuario</h2>
+    <table class="tabla">
+      <tr><th>Nombres</th><td>{{ info.usuario.nombreCompleto }}</td></tr>
+      <tr><th>Identificación</th><td>{{ info.usuario.identificacion }}</td></tr>
+      <tr><th>Correo</th><td>{{ info.usuario.correo }}</td></tr>
+      <tr><th>Teléfono</th><td>{{ info.usuario.telefono }}</td></tr>
+      <tr><th>Rol</th><td>{{ info.usuario.rol }}</td></tr>
+    </table>
+  </article>
+
+  <article class="panel" *ngIf="info.usuario.rol === 'Gestor'">
+    <h2>Usuarios pendientes de aprobación</h2>
+    <p class="vacio" *ngIf="info.pendientes.length === 0">No hay usuarios esperando aprobación.</p>
+    <table class="tabla" *ngIf="info.pendientes.length">
+      <thead>
+        <tr><th>Usuario</th><th>Nombre</th><th>Rol</th><th>Correo</th><th>Estado</th></tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let persona of info.pendientes">
+          <td>{{ persona.nombreUsuario }}</td>
+          <td>{{ persona.nombreCompleto }}</td>
+          <td>{{ persona.rol }}</td>
+          <td>{{ persona.correo }}</td>
+          <td><span class="etiqueta warn">{{ persona.estado }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
+</section>

@@ -1,0 +1,41 @@
+<section class="pagina">
+  <div class="encabezado">
+    <div>
+      <h1>Servicios</h1>
+      <p>Planes de internet que el cajero puede contratar.</p>
+    </div>
+    <button mat-stroked-button type="button" (click)="nuevo()">Nuevo</button>
+  </div>
+  <div class="dos">
+    <article class="panel">
+      <h2>{{ editando ? 'Editar plan' : 'Nuevo plan' }}</h2>
+      <form [formGroup]="form" (ngSubmit)="guardar()">
+        <mat-form-field appearance="outline" class="ancho"><mat-label>Nombre</mat-label><input matInput formControlName="nombre"></mat-form-field>
+        <mat-form-field appearance="outline" class="ancho"><mat-label>Descripción</mat-label><textarea matInput rows="2" formControlName="descripcion"></textarea></mat-form-field>
+        <mat-form-field appearance="outline" class="ancho"><mat-label>Equipos</mat-label><input matInput formControlName="equipos"></mat-form-field>
+        <mat-form-field appearance="outline" class="ancho"><mat-label>Velocidad Mbps</mat-label><input matInput type="number" formControlName="velocidadMbps"></mat-form-field>
+        <mat-form-field appearance="outline" class="ancho"><mat-label>Precio</mat-label><input matInput type="number" formControlName="precio"></mat-form-field>
+        <div class="fila">
+          <label><input type="checkbox" formControlName="activo"> Activo</label>
+          <button mat-flat-button color="primary" type="submit">Guardar</button>
+        </div>
+      </form>
+    </article>
+    <article class="panel">
+      <table class="tabla">
+        <thead><tr><th>Plan</th><th>Mbps</th><th>Precio</th><th></th></tr></thead>
+        <tbody>
+          <tr *ngFor="let servicio of servicios">
+            <td>{{ servicio.nombre }}<br><small>{{ servicio.equipos }}</small></td>
+            <td>{{ servicio.velocidadMbps }}</td>
+            <td>{{ servicio.precio | number:'1.2-2' }}</td>
+            <td class="acciones">
+              <button mat-button type="button" (click)="editar(servicio)">Editar</button>
+              <button mat-button type="button" (click)="eliminar(servicio)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+  </div>
+</section>

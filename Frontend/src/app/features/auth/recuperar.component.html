@@ -1,0 +1,37 @@
+<section class="login">
+  <div class="login-marca">
+    <div class="marca"><span class="logo">ND</span><strong>NetDesk</strong></div>
+    <h1>Recupere el acceso sin salir de la ventanilla.</h1>
+  </div>
+  <div class="login-panel">
+    <form class="recuperar" *ngIf="paso === 'correo'" [formGroup]="solicitar" (ngSubmit)="pedir()">
+      <h2>Recuperar contraseña</h2>
+      <p class="ayuda">Ingrese el correo del usuario. El código de demostración aparece aquí porque no hay servidor de correo configurado.</p>
+      <mat-form-field appearance="outline" class="ancho">
+        <mat-label>Correo</mat-label>
+        <input matInput formControlName="correo" autocomplete="email">
+      </mat-form-field>
+      <small class="error" *ngIf="invalido('solicitar', 'correo')">{{ solicitar.get('correo') | errorCampo }}</small>
+      <div class="fila">
+        <button mat-flat-button color="primary" type="submit">Generar código</button>
+        <a mat-button routerLink="/auth/login">Volver</a>
+      </div>
+    </form>
+
+    <form class="recuperar" *ngIf="paso === 'codigo'" [formGroup]="restablecer" (ngSubmit)="guardar()">
+      <h2>Nueva contraseña</h2>
+      <p class="ayuda" *ngIf="codigoDemo">Código de demostración: <strong>{{ codigoDemo }}</strong></p>
+      <mat-form-field appearance="outline" class="ancho">
+        <mat-label>Código</mat-label>
+        <input matInput formControlName="codigo" maxlength="8">
+      </mat-form-field>
+      <small class="error" *ngIf="invalido('restablecer', 'codigo')">El código tiene 8 caracteres.</small>
+      <mat-form-field appearance="outline" class="ancho">
+        <mat-label>Nueva contraseña</mat-label>
+        <input matInput type="password" formControlName="nuevaPassword">
+      </mat-form-field>
+      <small class="error" *ngIf="invalido('restablecer', 'nuevaPassword')">Entre 8 y 30 caracteres, con una mayúscula y un número.</small>
+      <button mat-flat-button color="primary" type="submit">Guardar contraseña</button>
+    </form>
+  </div>
+</section>

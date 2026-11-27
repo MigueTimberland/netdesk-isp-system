@@ -1,0 +1,41 @@
+<section class="login">
+  <div class="login-marca">
+    <div class="marca">
+      <span class="logo">ND</span>
+      <div>
+        <strong>NetDesk</strong>
+        <small>Caja del proveedor</small>
+      </div>
+    </div>
+    <div>
+      <h1>La caja abre cuando el turno tiene nombre.</h1>
+      <p>Contratos, pagos y cambios de plan, con un cajero a la vez por ventanilla.</p>
+    </div>
+    <p>Quito · operación de atención al cliente</p>
+  </div>
+  <div class="login-panel">
+    <form [formGroup]="form" (ngSubmit)="entrar()">
+      <h2>Ingresar</h2>
+      <p class="ayuda">Use su usuario de caja. Los campos se validan antes de consultar el servicio.</p>
+      <mat-form-field appearance="outline" class="ancho">
+        <mat-label>Usuario</mat-label>
+        <input matInput formControlName="nombreUsuario" autocomplete="username">
+      </mat-form-field>
+      <small class="error" *ngIf="invalido('nombreUsuario')">Ingrese el usuario.</small>
+      <mat-form-field appearance="outline" class="ancho">
+        <mat-label>Contraseña</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="current-password">
+      </mat-form-field>
+      <small class="error" *ngIf="invalido('password')">Ingrese la contraseña.</small>
+      <div class="fila">
+        <button mat-flat-button color="primary" type="submit">Entrar</button>
+        <a mat-button routerLink="/auth/recuperar">Recuperar contraseña</a>
+      </div>
+      <div class="credenciales">
+        <div><code>admin123</code> / <code>Admin1234</code></div>
+        <div><code>gestor123</code> / <code>Gestor1234</code></div>
+        <div><code>cajero123</code> / <code>Cajero1234</code></div>
+      </div>
+    </form>
+  </div>
+</section>

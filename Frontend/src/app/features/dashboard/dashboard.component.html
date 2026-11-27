@@ -1,0 +1,72 @@
+<section class="pagina">
+  <div class="encabezado">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Usuarios, cajas y actividad del periodo.</p>
+    </div>
+    <form class="fila" [formGroup]="filtro" (ngSubmit)="consultar()">
+      <mat-form-field appearance="outline">
+        <mat-label>Desde</mat-label>
+        <input matInput type="date" formControlName="desde">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Hasta</mat-label>
+        <input matInput type="date" formControlName="hasta">
+      </mat-form-field>
+      <button mat-flat-button color="primary" type="submit">Filtrar</button>
+    </form>
+  </div>
+
+  <div class="rejilla" *ngIf="datos as info">
+    <article class="tarjeta"><span>Sesión activa</span><strong>{{ info.usuarios.sesionActiva }}</strong></article>
+    <article class="tarjeta"><span>Sesión inactiva</span><strong>{{ info.usuarios.sesionInactiva }}</strong></article>
+    <article class="tarjeta"><span>Bloqueados</span><strong>{{ info.usuarios.bloqueados }}</strong></article>
+    <article class="tarjeta"><span>Pendientes</span><strong>{{ info.usuarios.pendientes }}</strong></article>
+    <article class="tarjeta"><span>Activos</span><strong>{{ info.usuarios.activos }}</strong></article>
+    <article class="tarjeta"><span>Inactivos</span><strong>{{ info.usuarios.inactivos }}</strong></article>
+  </div>
+
+  <div class="dos" *ngIf="datos as info">
+    <article class="panel">
+      <h2>Nueva caja</h2>
+      <form [formGroup]="caja" (ngSubmit)="crearCaja()">
+        <mat-form-field appearance="outline" class="ancho"><mat-label>Código</mat-label><input matInput formControlName="codigo"></mat-form-field>
+        <mat-form-field appearance="outline" class="ancho"><mat-label>Nombre</mat-label><input matInput formControlName="nombre"></mat-form-field>
+        <mat-form-field appearance="outline" class="ancho"><mat-label>Descripción</mat-label><input matInput formControlName="descripcion"></mat-form-field>
+        <button mat-flat-button color="primary" type="submit">Crear caja</button>
+      </form>
+    </article>
+    <article class="panel">
+      <h2>Cajas</h2>
+      <table class="tabla">
+        <thead><tr><th>Código</th><th>Nombre</th><th>Asignados</th><th>Atendidos</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let caja of info.cajas">
+            <td>{{ caja.codigo }}</td><td>{{ caja.nombre }}</td><td>{{ caja.turnosAsignados }}</td><td>{{ caja.turnosAtendidos }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+  </div>
+
+  <div class="dos" *ngIf="datos as info">
+    <article class="panel">
+      <h2>Cajeros</h2>
+      <table class="tabla">
+        <thead><tr><th>Nombre</th><th>Usuario</th><th>Atendidos</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let persona of info.cajeros"><td>{{ persona.nombre }}</td><td>{{ persona.usuario }}</td><td>{{ persona.total }}</td></tr>
+        </tbody>
+      </table>
+    </article>
+    <article class="panel">
+      <h2>Gestores</h2>
+      <table class="tabla">
+        <thead><tr><th>Nombre</th><th>Usuario</th><th>Asignados</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let persona of info.gestores"><td>{{ persona.nombre }}</td><td>{{ persona.usuario }}</td><td>{{ persona.total }}</td></tr>
+        </tbody>
+      </table>
+    </article>
+  </div>
+</section>

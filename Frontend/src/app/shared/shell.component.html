@@ -1,0 +1,29 @@
+<div class="shell">
+  <aside>
+    <div class="marca">
+      <span class="logo">ND</span>
+      <div>
+        <strong>NetDesk</strong>
+        <small>Caja del proveedor</small>
+      </div>
+    </div>
+    <nav>
+      <a *ngFor="let menu of menus" [routerLink]="menu.ruta" routerLinkActive="activo">
+        <mat-icon>{{ menu.icono }}</mat-icon>
+        <span>{{ menu.titulo }}</span>
+      </a>
+    </nav>
+  </aside>
+  <div class="contenido">
+    <header>
+      <div>
+        <strong>{{ usuario?.nombreCompleto }}</strong>
+        <span>{{ usuario?.nombreUsuario }} · {{ usuario?.rol }}</span>
+      </div>
+      <button mat-stroked-button type="button" (click)="salir()">Cerrar sesión</button>
+    </header>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
