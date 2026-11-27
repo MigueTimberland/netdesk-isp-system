@@ -1,0 +1,33 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "NetDesk_Sql2026!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - netdesk-sql:/var/opt/mssql
+
+  backend:
+    build:
+      context: ./Backend
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: "Server=db;Database=NetDeskIsp;User Id=sa;Password=NetDesk_Sql2026!;TrustServerCertificate=True;MultipleActiveResultSets=True"
+      Recuperacion__ExponerCodigo: "true"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./Frontend
+    ports:
+      - "8088:80"
+    depends_on:
+      - backend
+
+volumes:
+  netdesk-sql:

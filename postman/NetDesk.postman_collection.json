@@ -1,0 +1,290 @@
+{
+  "info": {
+    "name": "NetDesk ISP",
+    "description": "CRUD de caja, usuarios, clientes, turnos, contratos y pagos. El login guarda el JWE en la variable token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5080" },
+    { "key": "token", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "type": "text/javascript",
+              "exec": [
+                "const body = pm.response.json();",
+                "if (body.token) pm.collectionVariables.set('token', body.token);"
+              ]
+            }
+          }],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombreUsuario\": \"admin123\",\n  \"password\": \"Admin1234\"\n}" },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Me",
+          "request": { "method": "GET", "url": "{{baseUrl}}/api/auth/me" }
+        },
+        {
+          "name": "Recuperar contraseña",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"correo\": \"cajero@netdesk.com\"\n}" },
+            "url": "{{baseUrl}}/api/auth/recuperar"
+          }
+        },
+        {
+          "name": "Restablecer contraseña",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"correo\": \"cajero@netdesk.com\",\n  \"codigo\": \"PEGARCODIGO\",\n  \"nuevaPassword\": \"Cajero1234\"\n}" },
+            "url": "{{baseUrl}}/api/auth/restablecer"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": { "method": "POST", "url": "{{baseUrl}}/api/auth/logout" }
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        { "name": "Listar", "request": { "method": "GET", "url": "{{baseUrl}}/api/usuarios" } },
+        { "name": "Pendientes", "request": { "method": "GET", "url": "{{baseUrl}}/api/usuarios/pendientes" } },
+        { "name": "Cajeros activos", "request": { "method": "GET", "url": "{{baseUrl}}/api/usuarios/por-rol/Cajero" } },
+        { "name": "Obtener", "request": { "method": "GET", "url": "{{baseUrl}}/api/usuarios/2" } },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombreUsuario\": \"cajero890\",\n  \"password\": \"Cajero1234\",\n  \"nombres\": \"Andres\",\n  \"apellidos\": \"Paredes\",\n  \"identificacion\": \"0102030408\",\n  \"correo\": \"andres.paredes@netdesk.com\",\n  \"telefono\": \"0991112233\",\n  \"rolId\": 3\n}" },
+            "url": "{{baseUrl}}/api/usuarios"
+          }
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombreUsuario\": \"cajero890\",\n  \"password\": \"\",\n  \"nombres\": \"Andres\",\n  \"apellidos\": \"Paredes Lopez\",\n  \"identificacion\": \"0102030408\",\n  \"correo\": \"andres.paredes@netdesk.com\",\n  \"telefono\": \"0991112233\",\n  \"rolId\": 3\n}" },
+            "url": "{{baseUrl}}/api/usuarios/6"
+          }
+        },
+        {
+          "name": "Cambiar estado",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"Activo\"\n}" },
+            "url": "{{baseUrl}}/api/usuarios/5/estado"
+          }
+        },
+        { "name": "Aprobar", "request": { "method": "POST", "url": "{{baseUrl}}/api/usuarios/5/aprobar" } },
+        { "name": "Rechazar", "request": { "method": "POST", "url": "{{baseUrl}}/api/usuarios/5/rechazar" } },
+        { "name": "Eliminar", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/usuarios/6" } },
+        { "name": "Plantilla", "request": { "method": "GET", "url": "{{baseUrl}}/api/usuarios/plantilla" } }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        { "name": "Listar", "request": { "method": "GET", "url": "{{baseUrl}}/api/clientes" } },
+        { "name": "Buscar por identificación", "request": { "method": "GET", "url": "{{baseUrl}}/api/clientes/por-identificacion/0923456781" } },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombres\": \"Lucia\",\n  \"apellidos\": \"Mendoza\",\n  \"identificacion\": \"1712345678\",\n  \"correo\": \"lucia.mendoza@correo.com\",\n  \"telefono\": \"0987001122\",\n  \"direccion\": \"Av. Amazonas N34-120 y Pereira, edificio central\",\n  \"referenciaDireccion\": \"Junto a la farmacia de la esquina norte\"\n}" },
+            "url": "{{baseUrl}}/api/clientes"
+          }
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombres\": \"Lucia\",\n  \"apellidos\": \"Mendoza Ruiz\",\n  \"identificacion\": \"1712345678\",\n  \"correo\": \"lucia.mendoza@correo.com\",\n  \"telefono\": \"0987001122\",\n  \"direccion\": \"Av. Amazonas N34-120 y Pereira, edificio central\",\n  \"referenciaDireccion\": \"Junto a la farmacia de la esquina norte\"\n}" },
+            "url": "{{baseUrl}}/api/clientes/2"
+          }
+        },
+        {
+          "name": "Cambiar estado",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"Activo\"\n}" },
+            "url": "{{baseUrl}}/api/clientes/1/estado"
+          }
+        },
+        { "name": "Eliminar", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/clientes/2" } },
+        { "name": "Plantilla", "request": { "method": "GET", "url": "{{baseUrl}}/api/clientes/plantilla" } }
+      ]
+    },
+    {
+      "name": "Cajas",
+      "item": [
+        { "name": "Listar", "request": { "method": "GET", "url": "{{baseUrl}}/api/cajas" } },
+        { "name": "Mías", "request": { "method": "GET", "url": "{{baseUrl}}/api/cajas/mias" } },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"codigo\": \"CJ03\",\n  \"nombre\": \"Caja Centro\",\n  \"descripcion\": \"Ventanilla de respaldo\"\n}" },
+            "url": "{{baseUrl}}/api/cajas"
+          }
+        },
+        {
+          "name": "Asignar cajero",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"cajeroId\": 4\n}" },
+            "url": "{{baseUrl}}/api/cajas/2/asignaciones"
+          }
+        },
+        { "name": "Quitar asignación", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/cajas/1/asignaciones/2" } },
+        { "name": "Abrir", "request": { "method": "POST", "url": "{{baseUrl}}/api/cajas/1/abrir" } },
+        { "name": "Cerrar", "request": { "method": "POST", "url": "{{baseUrl}}/api/cajas/1/cerrar" } }
+      ]
+    },
+    {
+      "name": "Turnos",
+      "item": [
+        { "name": "Listar hoy", "request": { "method": "GET", "url": "{{baseUrl}}/api/turnos" } },
+        { "name": "Míos", "request": { "method": "GET", "url": "{{baseUrl}}/api/turnos/mios" } },
+        {
+          "name": "Crear",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"cajaId\": 1,\n  \"cajeroId\": 3,\n  \"tipoAtencionId\": 1,\n  \"cantidad\": 1\n}" },
+            "url": "{{baseUrl}}/api/turnos"
+          }
+        },
+        {
+          "name": "Iniciar",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": "{{baseUrl}}/api/turnos/1/iniciar"
+          }
+        },
+        { "name": "Finalizar", "request": { "method": "POST", "url": "{{baseUrl}}/api/turnos/1/finalizar" } },
+        { "name": "Cancelar", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/turnos/2" } }
+      ]
+    },
+    {
+      "name": "Servicios y catálogos",
+      "item": [
+        { "name": "Listar servicios", "request": { "method": "GET", "url": "{{baseUrl}}/api/servicios" } },
+        {
+          "name": "Crear servicio",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Fibra Rural 20\",\n  \"descripcion\": \"Plan básico para zonas de baja densidad.\",\n  \"equipos\": \"ONT fibra\",\n  \"velocidadMbps\": 20,\n  \"precio\": 18.5,\n  \"activo\": true\n}" },
+            "url": "{{baseUrl}}/api/servicios"
+          }
+        },
+        {
+          "name": "Actualizar servicio",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Fibra Rural 25\",\n  \"descripcion\": \"Plan básico para zonas de baja densidad.\",\n  \"equipos\": \"ONT fibra\",\n  \"velocidadMbps\": 25,\n  \"precio\": 19.5,\n  \"activo\": true\n}" },
+            "url": "{{baseUrl}}/api/servicios/5"
+          }
+        },
+        { "name": "Eliminar servicio", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/servicios/5" } },
+        { "name": "Roles", "request": { "method": "GET", "url": "{{baseUrl}}/api/catalogos/roles" } },
+        { "name": "Tipos de atención", "request": { "method": "GET", "url": "{{baseUrl}}/api/catalogos/tipos-atencion" } },
+        { "name": "Formas de pago", "request": { "method": "GET", "url": "{{baseUrl}}/api/catalogos/formas-pago" } },
+        { "name": "Menú del rol", "request": { "method": "GET", "url": "{{baseUrl}}/api/menus/mios" } }
+      ]
+    },
+    {
+      "name": "Contratos y pagos",
+      "item": [
+        { "name": "Contratos del cliente", "request": { "method": "GET", "url": "{{baseUrl}}/api/contratos/cliente/1" } },
+        {
+          "name": "Contratar",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"clienteId\": 2,\n  \"servicioId\": 1,\n  \"formaPagoId\": 1,\n  \"turnoId\": 3\n}" },
+            "url": "{{baseUrl}}/api/contratos"
+          }
+        },
+        {
+          "name": "Cambiar servicio",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"servicioId\": 3,\n  \"turnoId\": 4\n}" },
+            "url": "{{baseUrl}}/api/contratos/1/cambiar-servicio"
+          }
+        },
+        {
+          "name": "Cambiar forma de pago",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"formaPagoId\": 2,\n  \"turnoId\": 5\n}" },
+            "url": "{{baseUrl}}/api/contratos/2/cambiar-forma-pago"
+          }
+        },
+        {
+          "name": "Cancelar contrato",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"turnoId\": 6,\n  \"observacion\": \"El cliente solicita la baja del servicio.\"\n}" },
+            "url": "{{baseUrl}}/api/contratos/2/cancelar"
+          }
+        },
+        { "name": "Pagos del cliente", "request": { "method": "GET", "url": "{{baseUrl}}/api/pagos/cliente/1" } },
+        {
+          "name": "Registrar pago",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"contratoId\": 2,\n  \"turnoId\": 7,\n  \"referencia\": \"TRX-100\"\n}" },
+            "url": "{{baseUrl}}/api/pagos"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        { "name": "Bienvenida", "request": { "method": "GET", "url": "{{baseUrl}}/api/dashboard/bienvenida" } },
+        { "name": "Indicadores", "request": { "method": "GET", "url": "{{baseUrl}}/api/dashboard/indicadores?desde=2026-11-01&hasta=2026-11-30" } },
+        { "name": "Salud", "request": { "auth": { "type": "noauth" }, "method": "GET", "url": "{{baseUrl}}/api/salud" } }
+      ]
+    }
+  ]
+}
